@@ -2,6 +2,7 @@
 requires = [
     "setuptools>=42",
     "wheel",
-    "pandas"
+    "pandas",
+    "pytest"
 ]
 build-backend = "setuptools.build_meta"
