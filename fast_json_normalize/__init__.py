@@ -22,36 +22,12 @@ def fast_json_normalize(json_object: list or dict, separator: str = ".", to_pand
         return new_dict_
 
     # depth aware recursive function, maintains object types and pandas column ordering
-    def _normalise_json_ordered(object_: list or dict, key_string_: str = "", nested_dict_: dict = None,
-                                top_dict_: dict = None,
-                                separator_: str = ".", depth: int = 0):
-        if isinstance(object_, dict):
-            for key, value in object_.items():
-                new_key = f"{key_string_}{separator_}{key}"
-                _normalise_json_ordered(object_=value,
-                                        key_string_=new_key if new_key[len(separator_) - 1] != separator_
-                                        else new_key[len(separator_):],
-                                        # to avoid adding the separator to the start of every key
-                                        nested_dict_=nested_dict_,
-                                        top_dict_=top_dict_,
-                                        separator_=separator_,
-                                        depth=depth + 1)
-        elif isinstance(object_, list):
-            if depth == 1:
-                top_dict_[key_string_] = object_
-            else:
-                nested_dict_[key_string_] = object_
-        elif isinstance(object_, str) or isinstance(object_, int) or isinstance(object_, float):
-            if depth == 1:
-                top_dict_[key_string_] = object_
-            else:
-                nested_dict_[key_string_] = object_
-        else:
-            if depth == 1:
-                top_dict_[key_string_] = object_
-            else:
-                nested_dict_[key_string_] = object_
-        return top_dict_, nested_dict_
+    def _normalise_json_ordered(object_: dict, separator_: str = "."):
+        top_dict_ = {k: v for k, v in object_.items() if not isinstance(v, dict)}
+        nested_dict_ = _normalise_json({k: v for k, v in object_.items() if isinstance(v, dict)},
+                                       separator_=separator_,
+                                       new_dict_={})
+        return {**top_dict_, **nested_dict_}
 
     # expect a dictionary, as most jsons are. However, lists are perfectly valid
     if isinstance(json_object, dict):
@@ -60,12 +36,8 @@ def fast_json_normalize(json_object: list or dict, separator: str = ".", to_pand
                                                      separator_=separator,
                                                      new_dict_={})
         else:
-            top_dict, nested_dict = _normalise_json_ordered(object_=json_object,
-                                                            separator_=separator,
-                                                            nested_dict_={},
-                                                            top_dict_={},
-                                                            depth=0)
-            normalised_json_object = {**top_dict, **nested_dict}
+            normalised_json_object = _normalise_json_ordered(object_=json_object,
+                                                             separator_=separator)
         if to_pandas:
             df = pd.DataFrame(data=[normalised_json_object.values()],
                               columns=list(normalised_json_object.keys()))
