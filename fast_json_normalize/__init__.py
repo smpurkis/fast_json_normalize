@@ -4,7 +4,7 @@ import pandas as pd
 def fast_json_normalize(json_object: list or dict, separator: str = ".", to_pandas: bool = True,
                         order_to_pandas: bool = True):
     # main recursive function, maintains object types, not ordering
-    def _normalise_json(object_: list or dict, key_string_: str = "", new_dict_: dict = None, separator_: str = "."):
+    def _normalise_json(object_: object, key_string_: str = "", new_dict_: dict = None, separator_: str = "."):
         if isinstance(object_, dict):
             for key, value in object_.items():
                 new_key = f"{key_string_}{separator_}{key}"
@@ -13,10 +13,6 @@ def fast_json_normalize(json_object: list or dict, separator: str = ".", to_pand
                                     separator_):],  # to avoid adding the separator to the start of every key
                                 new_dict_=new_dict_,
                                 separator_=separator_)
-        elif isinstance(object_, list):
-            new_dict_[key_string_] = object_
-        elif isinstance(object_, str) or isinstance(object_, int) or isinstance(object_, float):
-            new_dict_[key_string_] = object_
         else:
             new_dict_[key_string_] = object_
         return new_dict_
