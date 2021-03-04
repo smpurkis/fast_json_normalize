@@ -1,5 +1,4 @@
 cimport cython
-import pandas as pd
 
 # main recursive function, maintains object types, not ordering
 cpdef dict _normalise_json_cythonized(object_: object, str key_string_: str = "", dict new_dict_: dict = None, str separator_: str = "."):
@@ -51,10 +50,6 @@ cpdef object fast_json_normalize_cythonized(object json_object: list or dict, st
         else:
             normalised_json_object = _normalise_json_ordered_cythonized(object_=json_object,
                                                              separator_=separator)
-        if to_pandas:
-            df = pd.DataFrame(data=[normalised_json_object.values()],
-                              columns=list(normalised_json_object.keys()))
-            return df
     elif isinstance(json_object, list):
         if not order_to_pandas:
             normalised_json_object = [_normalise_json_cythonized(row,
@@ -65,8 +60,6 @@ cpdef object fast_json_normalize_cythonized(object json_object: list or dict, st
                                                           separator=separator,
                                                           order_to_pandas=order_to_pandas,
                                                           to_pandas=False) for row in json_object]
-        if to_pandas:
-            return pd.DataFrame(normalised_json_object)
     else:
         raise TypeError(
             f"Json object type {type(json_object)} not valid. Please pass a list or a dictionary as a valid json object")
