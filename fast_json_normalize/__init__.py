@@ -1,8 +1,17 @@
 import pandas as pd
+from cythonized import fast_json_normalize_cythonized
 
 
 def fast_json_normalize(json_object: list or dict, separator: str = ".", to_pandas: bool = True,
-                        order_to_pandas: bool = True):
+                        order_to_pandas: bool = True, cythonized: bool = True):
+    if cythonized:
+        return fast_json_normalize_cythonized(
+            json_object=json_object,
+            separator=separator,
+            to_pandas=to_pandas,
+            order_to_pandas=order_to_pandas
+        )
+
     # main recursive function, maintains object types, not ordering
     def _normalise_json(object_: object, key_string_: str = "", new_dict_: dict = None, separator_: str = "."):
         if isinstance(object_, dict):
@@ -47,7 +56,8 @@ def fast_json_normalize(json_object: list or dict, separator: str = ".", to_pand
             normalised_json_object = [fast_json_normalize(row,
                                                           separator=separator,
                                                           order_to_pandas=order_to_pandas,
-                                                          to_pandas=False) for row in json_object]
+                                                          to_pandas=False,
+                                                          cythonized=cythonized) for row in json_object]
         if to_pandas:
             return pd.DataFrame(normalised_json_object)
     else:
