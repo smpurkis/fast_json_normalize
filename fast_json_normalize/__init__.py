@@ -1,5 +1,5 @@
 import pandas as pd
-from cythonized import fast_json_normalize_cythonized
+from fast_json_normalize.cythonized import fast_json_normalize_cythonized
 
 
 def fast_json_normalize(json_object: list or dict, separator: str = ".", to_pandas: bool = True,
@@ -17,7 +17,7 @@ def fast_json_normalize(json_object: list or dict, separator: str = ".", to_pand
         def _normalise_json(object_: object, key_string_: str = "", new_dict_: dict = None, separator_: str = "."):
             if isinstance(object_, dict):
                 for key, value in object_.items():
-                    new_key = f"{key_string_}{separator_}{key}"
+                    new_key = key_string_ + separator_ + key
                     _normalise_json(object_=value,
                                     key_string_=new_key if new_key[len(separator_) - 1] != separator_ else new_key[len(
                                         separator_):],  # to avoid adding the separator to the start of every key
@@ -57,7 +57,8 @@ def fast_json_normalize(json_object: list or dict, separator: str = ".", to_pand
                                                               cythonized=cythonized) for row in json_object]
         else:
             raise TypeError(
-                f"Json object type {type(json_object)} not valid. Please pass a list or a dictionary as a valid json object")
+                "Json object type {} not valid. Please pass a list or a dictionary as a valid json object".format(
+                    type(json_object)))
 
     if to_pandas:
         if isinstance(json_object, dict):
