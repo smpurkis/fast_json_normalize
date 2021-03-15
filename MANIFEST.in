@@ -1,0 +1,2 @@
+graft fast_json_normalize
+include fast_json_normalize/cythonized.pyx
