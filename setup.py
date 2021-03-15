@@ -8,10 +8,10 @@ with open("README.md", 'r') as f:
 
 setup(
     name="fast_json_normalize",
-    version="0.0.7a",
+    version="0.0.9",
     packages=find_packages(),
     author="Sam Purkis",
-    description="A classification library using a novel audio-inspired algorithm.",
+    description="Faster pandas json normalize",
     long_description=long_description,
     long_description_content_type='text/markdown',
     url="https://github.com/smpurkis/fast_json_normalize",
