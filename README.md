@@ -8,4 +8,5 @@ It can be installed using
 pip install fast-json-normalize
 ```
 
-(plan on making a pull request once I've integrated it into a fork of [Pandas](https://github.com/pandas-dev/pandas)
+~(plan on making a pull request once I've integrated it into a fork of [Pandas](https://github.com/pandas-dev/pandas)~
+Pull request has been accepted into [Pandas](https://github.com/pandas-dev/pandas), see [40035](https://github.com/pandas-dev/pandas/pull/40035)
